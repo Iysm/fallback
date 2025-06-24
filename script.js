@@ -80,9 +80,9 @@ let lastTime = null;
 const videoElement = document.getElementById("dvd-video");
 
 const videoFiles = [
-	"2025-06-05_21-56-06.webm", 
-	"2025-06-06_18-07-08.webm", 
-	"2025-06-07_22-08-28.webm", 
+	"https://iysm.github.io/fallback-cdn1/2017-11-24_21-53-51.webm", 
+	"https://iysm.github.io/fallback-cdn1/2018-04-15_17-12-01.webm", 
+	"https://iysm.github.io/fallback-cdn1/2019-09-13_01-06-43.webm", 
 ];
 
 function shuffle(array) {
