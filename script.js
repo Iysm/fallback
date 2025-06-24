@@ -1,0 +1,204 @@
+const dvd = document.getElementById("dvd");
+const container = document.getElementById("container");
+
+let dx, dy;
+let speed = 200;
+let x, y;
+let fullscreen = false;
+let paused = false;
+
+function degToRad(deg) {
+	return deg * (Math.PI / 180);
+}
+
+function radToDeg(rad) {
+	return rad * (180 / Math.PI);
+}
+
+function getRandomAllowedAngle() {
+	const ranges = [
+		[20, 40],
+		[140, 160],
+		[200, 220],
+		[320, 340]
+	];
+
+	const [min, max] = ranges[Math.floor(Math.random() * ranges.length)];
+	const angleDeg = min + Math.random() * (max - min);
+	return degToRad(angleDeg);
+}
+
+function clampAngle(angleRad) {
+	let angle = angleRad % (2 * Math.PI);
+	if (angle < 0) angle += 2 * Math.PI;
+
+	const margin = degToRad(15);
+
+	function inRange(center) {
+		return (angle > center - margin) && (angle < center + margin);
+	}
+
+	const forbiddenCenters = [
+		0,
+		Math.PI / 2,
+		Math.PI,
+		(3 * Math.PI) / 2
+	];
+
+	for (const center of forbiddenCenters) {
+		if (inRange(center)) {
+			if (angle < center) {
+				angle = center - margin;
+			} else {
+				angle = center + margin;
+			}
+			break;
+		}
+	}
+
+	return angle;
+}
+
+function initializeDirection() {
+	const angle = getRandomAllowedAngle();
+	dx = Math.cos(angle);
+	dy = Math.sin(angle);
+}
+
+function varyDirection() {
+	const variation = (Math.random() - 0.5) * 0.3;
+	let angle = Math.atan2(dy, dx) + variation;
+
+	angle = clampAngle(angle);
+
+	dx = Math.cos(angle);
+	dy = Math.sin(angle);
+}
+
+let lastTime = null;
+
+const videoElement = document.getElementById("dvd-video");
+
+const videoFiles = [
+	"2025-06-05_21-56-06.webm", 
+	"2025-06-06_18-07-08.webm", 
+	"2025-06-07_22-08-28.webm", 
+];
+
+function shuffle(array) {
+	let currentIndex = array.length, randomIndex;
+	while (currentIndex !== 0) {
+		randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex--;
+		[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+	}
+	return array;
+}
+
+let playlist = [];
+let currentIndex = 0;
+
+function loadPlaylist() {
+	playlist = shuffle([...videoFiles]);
+	currentIndex = 0;
+}
+
+function playNextVideo() {
+	if (currentIndex >= playlist.length) {
+		loadPlaylist();
+	}
+	videoElement.src = `clips/${playlist[currentIndex]}`;
+	videoElement.play();
+	currentIndex++;
+}
+
+videoElement.addEventListener("ended", playNextVideo);
+
+function updatePosition(timestamp) {
+	if (!lastTime) lastTime = timestamp;
+	const delta = (timestamp - lastTime) / 1000;
+	lastTime = timestamp;
+
+	if (!paused) {
+		const rect = dvd.getBoundingClientRect();
+		const contRect = container.getBoundingClientRect();
+
+		x += dx * speed * delta;
+		y += dy * speed * delta;
+
+		let bouncedVerticalWall = false;
+		let bouncedHorizontalWall = false;
+
+		if (x + rect.width >= contRect.width) {
+			x = contRect.width - rect.width;
+			dx *= -1;
+			bouncedVerticalWall = true;
+		} else if (x <= 0) {
+			x = 0;
+			dx *= -1;
+			bouncedVerticalWall = true;
+		}
+
+		if (y + rect.height >= contRect.height) {
+			y = contRect.height - rect.height;
+			dy *= -1;
+			bouncedHorizontalWall = true;
+		} else if (y <= 0) {
+			y = 0;
+			dy *= -1;
+			bouncedHorizontalWall = true;
+		}
+
+		if (bouncedVerticalWall) {
+			varyDirection();
+		}
+
+		dvd.style.left = `${x}px`;
+		dvd.style.top = `${y}px`;
+	}
+
+	requestAnimationFrame(updatePosition);
+}
+
+window.addEventListener("load", () => {
+	const rect = dvd.getBoundingClientRect();
+	const contRect = container.getBoundingClientRect();
+
+	x = (contRect.width - rect.width) / 2;
+	y = (contRect.height - rect.height) / 2;
+
+	initializeDirection();
+
+	dvd.style.left = `${x}px`;
+	dvd.style.top = `${y}px`;
+
+	loadPlaylist();
+	playNextVideo();
+
+	requestAnimationFrame(updatePosition);
+});
+
+const video = document.getElementById("dvd-video");
+
+video.addEventListener("click", () => {
+	fullscreen = !fullscreen;
+	paused = fullscreen;
+
+	if (fullscreen) {
+		document.body.classList.add("fullscreen");
+		dvd.style.left = "0px";
+		dvd.style.top = "0px";
+
+		const src = video.currentSrc || video.src;
+		const match = src.match(/(\d{4}-\d{2}-\d{2})/);
+		if (match) {
+			document.getElementById("clip-date").textContent = match[1];
+		}
+
+		video.play();
+	} else {
+		document.body.classList.remove("fullscreen");
+		document.getElementById("clip-date").textContent = "";
+		video.play();
+	}
+});
