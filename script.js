@@ -103,13 +103,47 @@ function loadPlaylist() {
 	currentIndex = 0;
 }
 
+let isLoadingNext = false;
+
 function playNextVideo() {
+	if (isLoadingNext) return;
+	isLoadingNext = true;
+	
 	if (currentIndex >= playlist.length) {
 		loadPlaylist();
 	}
-	videoElement.src = `clips/${playlist[currentIndex]}`;
-	videoElement.play();
+	
+	const nextSrc = playlist[currentIndex];
 	currentIndex++;
+	
+	const tempVideo = document.createElement('video');
+	tempVideo.src = nextSrc;
+	tempVideo.preload = 'auto';
+	tempVideo.muted = videoElement.muted;
+	tempVideo.volume = videoElement.volume;
+	
+	const switchVideo = () => {
+		videoElement.src = nextSrc;
+		videoElement.load();
+		videoElement.play().then(() => {
+			isLoadingNext = false;
+		}).catch((error) => {
+			console.error('Error playing video:', error);
+			isLoadingNext = false;
+		});
+	};
+	
+	tempVideo.addEventListener('canplaythrough', switchVideo);
+	tempVideo.addEventListener('error', () => {
+		console.error('Error loading video:', nextSrc);
+		isLoadingNext = false;
+		if (currentIndex < playlist.length) {
+			playNextVideo();
+		} else {
+			loadPlaylist();
+			playNextVideo();
+		}
+	});
 }
 
 videoElement.addEventListener("ended", playNextVideo);
@@ -173,14 +207,15 @@ window.addEventListener("load", () => {
 	dvd.style.top = `${y}px`;
 
 	loadPlaylist();
-	playNextVideo();
+	
+	videoElement.src = playlist[currentIndex];
+	videoElement.play();
+	currentIndex++;
 
 	requestAnimationFrame(updatePosition);
 });
 
-const video = document.getElementById("dvd-video");
-
-video.addEventListener("click", () => {
+function handleVideoClick() {
 	fullscreen = !fullscreen;
 	paused = fullscreen;
 
@@ -189,16 +224,19 @@ video.addEventListener("click", () => {
 		dvd.style.left = "0px";
 		dvd.style.top = "0px";
 
-		const src = video.currentSrc || video.src;
+		const src = videoElement.currentSrc || videoElement.src;
 		const match = src.match(/(\d{4}-\d{2}-\d{2})/);
 		if (match) {
 			document.getElementById("clip-date").textContent = match[1];
 		}
 
-		video.play();
+		videoElement.play();
 	} else {
 		document.body.classList.remove("fullscreen");
 		document.getElementById("clip-date").textContent = "";
-		video.play();
+		videoElement.play();
 	}
-});
+}
+
+const video = document.getElementById("dvd-video");
+video.addEventListener("click", handleVideoClick);
