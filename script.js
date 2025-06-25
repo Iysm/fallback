@@ -345,6 +345,10 @@ function playNextVideo() {
 	
 	const switchVideo = () => {
 		videoElement.src = nextSrc;
+		if (fullscreen) {
+			const match = nextSrc.match(/(\d{4}-\d{2}-\d{2})/);
+			document.getElementById("clip-date").textContent = match ? match[1] : "";
+		}
 		videoElement.load();
 		videoElement.play().then(() => {
 			isLoadingNext = false;
