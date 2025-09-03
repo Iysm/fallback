@@ -304,6 +304,9 @@ const videoFiles = [
 	"https://iysm.github.io/fallback-cdn5/2025-06-05_21-56-06.webm", 
 	"https://iysm.github.io/fallback-cdn5/2025-06-06_18-07-08.webm", 
 	"https://iysm.github.io/fallback-cdn5/2025-06-07_22-08-28.webm", 
+	"https://iysm.github.io/fallback-cdn5/2025-07-07_19-57-19.webm", 
+	"https://iysm.github.io/fallback-cdn5/2025-08-21_00-52-50.webm", 
+	"https://iysm.github.io/fallback-cdn5/2025-09-01_22-58-29.webm", 
 ];
 
 function shuffle(array) {
@@ -465,3 +468,4 @@ function handleVideoClick() {
 
 const video = document.getElementById("dvd-video");
 video.addEventListener("click", handleVideoClick);
+
