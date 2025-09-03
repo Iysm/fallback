@@ -75,6 +75,24 @@ function varyDirection() {
 	dy = Math.sin(angle);
 }
 
+function flashPurpleBackground() {
+	const originalBackground = document.body.style.backgroundColor;
+	
+	document.body.style.backgroundColor = 'purple';
+	
+	setTimeout(() => {
+		document.body.style.backgroundColor = originalBackground;
+		
+		setTimeout(() => {
+			document.body.style.backgroundColor = 'purple';
+			
+			setTimeout(() => {
+				document.body.style.backgroundColor = originalBackground;
+			}, 100);
+		}, 100);
+	}, 100);
+}
+
 let lastTime = null;
 
 const videoElement = document.getElementById("dvd-video");
@@ -411,6 +429,11 @@ function updatePosition(timestamp) {
 			bouncedHorizontalWall = true;
 		}
 
+		
+		if (bouncedVerticalWall && bouncedHorizontalWall) {
+			flashPurpleBackground();
+		}
+
 		if (bouncedVerticalWall) {
 			varyDirection();
 		}
@@ -468,4 +491,3 @@ function handleVideoClick() {
 
 const video = document.getElementById("dvd-video");
 video.addEventListener("click", handleVideoClick);
-
