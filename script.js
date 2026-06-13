@@ -353,7 +353,20 @@ const videoFiles = [
 	"https://iysm.github.io/fallback-cdn5/2025-10_4.webm", 
 	"https://iysm.github.io/fallback-cdn5/2025-10_5.webm", 
 	"https://iysm.github.io/fallback-cdn5/2025-11.webm", 
-	"https://iysm.github.io/fallback-cdn5/2025-12.webm"
+	"https://iysm.github.io/fallback-cdn5/2025-12.webm",
+	"https://iysm.github.io/fallback-cdn6/2026-01.webm", 
+	"https://iysm.github.io/fallback-cdn6/2026-03.webm", 
+	"https://iysm.github.io/fallback-cdn6/2026-03_2.webm", 
+	"https://iysm.github.io/fallback-cdn6/2026-03_3.webm", 
+	"https://iysm.github.io/fallback-cdn6/2026-03_4.webm", 
+	"https://iysm.github.io/fallback-cdn6/2026-03_5.webm", 
+	"https://iysm.github.io/fallback-cdn6/2026-04.webm", 
+	"https://iysm.github.io/fallback-cdn6/2026-04_2.webm", 
+	"https://iysm.github.io/fallback-cdn6/2026-04_3.webm", 
+	"https://iysm.github.io/fallback-cdn6/2026-05.webm", 
+	"https://iysm.github.io/fallback-cdn6/2026-05_2.webm", 
+	"https://iysm.github.io/fallback-cdn6/2026-05_3.webm", 
+	"https://iysm.github.io/fallback-cdn6/2026-05_4.webm"
 ];
 
 function shuffle(array) {
