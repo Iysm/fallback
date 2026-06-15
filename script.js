@@ -522,6 +522,13 @@ window.addEventListener("load", () => {
 	videoElement.play();
 	currentIndex++;
 
+	videoElement.addEventListener("playing", () => {
+    const placeholder = document.getElementById("dvd-placeholder");
+    const loadingText = document.getElementById("dvd-loading-text");
+    if (placeholder) placeholder.style.display = "none";
+    if (loadingText) loadingText.style.display = "none";
+	}, { once: true });
+
 	preloadNextVideo();
 
 	requestAnimationFrame(updatePosition);
