@@ -40,15 +40,15 @@ html, body {
 }
 
 #dvd-loading-text {
-    position: absolute;
-    top: 25%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+	position: absolute;
+	top: 25%;
+	left: 50%;
+	transform: translate(-50%, -50%);
 	font-family: 'Pacifico', cursive;
 	color: #F8C8DC;
-    font-size: 2vw;
-    margin: 0;
-    pointer-events: none;
+	font-size: 2vw;
+	margin: 0;
+	pointer-events: none;
 	user-select: none;
 	text-align: center;
 }
